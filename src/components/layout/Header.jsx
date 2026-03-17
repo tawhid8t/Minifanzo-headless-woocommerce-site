@@ -9,9 +9,27 @@ import { useRouter } from "next/router";
 import { useCart } from "@/context/CartContext";
 import CartDrawer from "@/components/cart/CartDrawer";
 
-export default function Header() {
+export default function Header({ logo = null }) {
   const router = useRouter();
   const { cartCount } = useCart();
+
+  const defaultLogo = "https://minifanzo.com/wp-content/uploads/2026/03/logo-2-1.png";
+  const [logoUrl, setLogoUrl] = useState(logo || defaultLogo);
+
+  useEffect(() => {
+    if (!logo) {
+      const WC_URL = process.env.NEXT_PUBLIC_WC_URL || '';
+      const baseUrl = WC_URL.replace(/\/$/, '').replace('/wp-json', '');
+      fetch(`${baseUrl}/wp-json/minifanzo/v1/homepage`, { cache: 'no-store' })
+        .then(res => res.json())
+        .then(data => {
+          if (data?.logo?.url) {
+            setLogoUrl(data.logo.url);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [logo]);
 
   const [isScrolled,   setIsScrolled]   = useState(false);
   const [isCartOpen,   setIsCartOpen]   = useState(false);
@@ -120,7 +138,7 @@ export default function Header() {
           <nav className="navbar">
             {/* Logo */}
             <Link href="/" className="logo">
-              <img src="https://minifanzo.com/wp-content/uploads/2026/03/logo-2-1.png" alt="MiniFanzo Logo" />
+              <img src={logoUrl} alt="MiniFanzo Logo" />
             </Link>
 
             {/* Nav Links */}
@@ -211,18 +229,6 @@ export default function Header() {
 
       {/* Cart Drawer */}
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-
-      {/* WhatsApp Float */}
-      <a
-        href="https://wa.me/8801788039222?text=Hello%20MiniFanzo!%20I%27m%20interested%20in%20your%20fans."
-        className="whatsapp-float"
-        target="_blank"
-        rel="noopener noreferrer"
-        title="Chat on WhatsApp"
-      >
-        <i className="fab fa-whatsapp" />
-        <span className="wa-tooltip">Chat with us!</span>
-      </a>
 
       {/* Back to Top */}
       <BackToTop />

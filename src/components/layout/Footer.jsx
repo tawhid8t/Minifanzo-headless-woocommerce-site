@@ -3,11 +3,26 @@
  * Exact design match to original HTML/CSS/JS site
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
+  const defaultLogo = "https://minifanzo.com/wp-content/uploads/2026/03/logo-2-1.png";
+  const [logoUrl, setLogoUrl] = useState(defaultLogo);
+
+  useEffect(() => {
+    const WC_URL = process.env.NEXT_PUBLIC_WC_URL || '';
+    const baseUrl = WC_URL.replace(/\/$/, '').replace('/wp-json', '');
+    fetch(`${baseUrl}/wp-json/minifanzo/v1/homepage`, { cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => {
+        if (data?.logo?.url) {
+          setLogoUrl(data.logo.url);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   function handleNewsletter() {
     if (email && email.includes("@")) {
@@ -24,7 +39,7 @@ export default function Footer() {
             {/* Brand Column */}
             <div className="footer-col brand-col">
               <img
-                src="https://minifanzo.com/wp-content/uploads/2026/03/logo-2-1.png"
+                src={logoUrl}
                 alt="MiniFanzo"
                 className="footer-logo"
               />
@@ -105,7 +120,7 @@ export default function Footer() {
       <div className="footer-bottom">
         <div className="container">
           <p>
-            © 2025 MiniFanzo. All rights reserved. Made with{" "}
+            © 2026 MiniFanzo. All rights reserved. Made with{" "}
             <i className="fas fa-heart" style={{ color: "#D1F843" }} /> in Bangladesh
           </p>
           <p>Product No: YS-2522 &amp; more | Imported from China</p>

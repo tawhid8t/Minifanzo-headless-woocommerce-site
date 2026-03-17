@@ -9,6 +9,7 @@ import { CartProvider }     from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import Header               from "@/components/layout/Header";
 import Footer               from "@/components/layout/Footer";
+import WhatsAppFloat        from "@/components/ui/WhatsAppFloat";
 
 export default function App({ Component, pageProps }) {
   return (
@@ -36,6 +37,7 @@ export default function App({ Component, pageProps }) {
             <Component {...pageProps} />
           </main>
           <Footer />
+          <WhatsAppFloat />
         </div>
       </WishlistProvider>
     </CartProvider>

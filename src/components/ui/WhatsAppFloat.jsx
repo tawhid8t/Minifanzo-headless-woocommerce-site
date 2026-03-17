@@ -13,7 +13,7 @@
 import { FaWhatsapp } from "react-icons/fa";
 
 export default function WhatsAppFloat({
-  phoneNumber = "8801700000000",
+  phoneNumber = "8801788039222",
   message     = "Hello! I'm interested in your mini fans.",
 }) {
   const encodedMsg = encodeURIComponent(message);
@@ -25,21 +25,10 @@ export default function WhatsAppFloat({
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"
-      className="whatsapp-float group"
+      className="whatsapp-float"
     >
-      <div className="flex items-center gap-2 bg-[#25D366] text-white
-                      rounded-full shadow-btn
-                      px-4 py-3 sm:py-3.5
-                      hover:bg-[#20ba57] transition-all duration-200
-                      hover:shadow-xl hover:scale-105 active:scale-95">
-        <FaWhatsapp className="w-6 h-6 flex-shrink-0" />
-        {/* Label — visible on desktop hover */}
-        <span className="hidden sm:block text-sm font-semibold whitespace-nowrap
-                         max-w-0 overflow-hidden group-hover:max-w-xs
-                         transition-all duration-300 ease-in-out">
-          Chat with us
-        </span>
-      </div>
+      <FaWhatsapp className="whatsapp-icon" />
+      <span className="whatsapp-label">Chat with us</span>
     </a>
   );
 }

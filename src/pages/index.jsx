@@ -428,7 +428,7 @@ export default function HomePage({ products = [], homepageData = null }) {
   // Default values
   const defaults = {
     hero: {
-      subtitle: 'New Arrivals 2025',
+      subtitle: 'New Arrivals 2026',
       title: 'Stay Cool\nAnywhere,\nAnytime.',
       description: "Bangladesh's most loved portable mini fans — crafted for your comfort, designed for your lifestyle. Beat the heat with MiniFanzo.",
       image: 'https://www.genspark.ai/api/files/s/z6GEJqHZ',
@@ -910,20 +910,36 @@ export default function HomePage({ products = [], homepageData = null }) {
           </div>
           <div className="contact-grid">
             <div className="contact-info">
-              {[
-                { icon: "fas fa-map-marker-alt", title: "Address", text: "Mirpur, Dhaka-1216, Bangladesh" },
-                { icon: "fas fa-phone-alt", title: "Phone / WhatsApp", text: "+880 1788039222" },
-                { icon: "fas fa-envelope", title: "Email", text: "tjihad847@gmail.com" },
-                { icon: "fas fa-clock", title: "Business Hours", text: "Saturday – Thursday: 9AM – 9PM" },
-              ].map((c, i) => (
-                <div key={i} className="contact-item">
-                  <div className="contact-icon"><i className={c.icon} /></div>
-                  <div>
-                    <strong>{c.title}</strong>
-                    <span>{c.text}</span>
-                  </div>
+              <div className="contact-info-grid">
+                <div className="contact-col">
+                  {[
+                    { icon: "fas fa-map-marker-alt", title: "Address", text: "Mirpur, Dhaka-1216, Bangladesh" },
+                    { icon: "fas fa-phone-alt", title: "Phone / WhatsApp", text: "+880 1788039222" },
+                  ].map((c, i) => (
+                    <div key={i} className="contact-item">
+                      <div className="contact-icon"><i className={c.icon} /></div>
+                      <div>
+                        <strong>{c.title}</strong>
+                        <span>{c.text}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+                <div className="contact-col">
+                  {[
+                    { icon: "fas fa-envelope", title: "Email", text: "tjihad847@gmail.com" },
+                    { icon: "fas fa-clock", title: "Business Hours", text: "Saturday – Thursday: 9AM – 9PM" },
+                  ].map((c, i) => (
+                    <div key={i} className="contact-item">
+                      <div className="contact-icon"><i className={c.icon} /></div>
+                      <div>
+                        <strong>{c.title}</strong>
+                        <span>{c.text}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
               <div className="social-links">
                 <a href="https://www.facebook.com/minifanzo" target="_blank" rel="noopener noreferrer" className="social-link fb"><i className="fab fa-facebook-f" /></a>
                 <a href="#" className="social-link ig"><i className="fab fa-instagram" /></a>

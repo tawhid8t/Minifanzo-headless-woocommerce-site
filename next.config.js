@@ -24,7 +24,7 @@ const nextConfig = {
       {
         // Your WooCommerce WordPress site — replace with actual domain
         protocol: "https",
-        hostname:  "yourdomain.com",
+        hostname:  "minifanzo.com",
         pathname:  "/wp-content/uploads/**",
       },
       {
