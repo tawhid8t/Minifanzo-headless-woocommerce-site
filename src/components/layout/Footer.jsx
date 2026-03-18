@@ -10,18 +10,34 @@ export default function Footer() {
   const [email, setEmail] = useState("");
   const defaultLogo = "https://admin.minifanzo.com/wp-content/uploads/2026/03/logo-2.png";
   const [logoUrl, setLogoUrl] = useState(defaultLogo);
+  const [logoLoading, setLogoLoading] = useState(false);
+
+  async function fetchWithRetry(url, options = {}, retries = 3) {
+    for (let i = 0; i < retries; i++) {
+      try {
+        const res = await fetch(url, options);
+        if (res.ok) return res;
+      } catch (e) {
+        if (i === retries - 1) throw e;
+      }
+      await new Promise(r => setTimeout(r, 1000 * (i + 1)));
+    }
+    throw new Error('Max retries reached');
+  }
 
   useEffect(() => {
     const WC_URL = process.env.NEXT_PUBLIC_WC_URL || '';
     const baseUrl = WC_URL.replace(/\/$/, '').replace('/wp-json', '');
-    fetch(`${baseUrl}/wp-json/minifanzo/v1/homepage`, { cache: 'no-store' })
+    setLogoLoading(true);
+    fetchWithRetry(`${baseUrl}/wp-json/minifanzo/v1/homepage`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         if (data?.logo?.url) {
           setLogoUrl(data.logo.url);
         }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setLogoLoading(false));
   }, []);
 
   function handleNewsletter() {
