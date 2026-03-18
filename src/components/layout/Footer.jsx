@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
-  const defaultLogo = "https://minifanzo.com/wp-content/uploads/2026/03/logo-2-1.png";
+  const defaultLogo = "https://admin.minifanzo.com/wp-content/uploads/2026/03/logo-2.png";
   const [logoUrl, setLogoUrl] = useState(defaultLogo);
 
   useEffect(() => {

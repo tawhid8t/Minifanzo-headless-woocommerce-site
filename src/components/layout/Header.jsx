@@ -13,7 +13,7 @@ export default function Header({ logo = null }) {
   const router = useRouter();
   const { cartCount } = useCart();
 
-  const defaultLogo = "https://minifanzo.com/wp-content/uploads/2026/03/logo-2-1.png";
+  const defaultLogo = "https://admin.minifanzo.com/wp-content/uploads/2026/03/logo-2.png";
   const [logoUrl, setLogoUrl] = useState(logo || defaultLogo);
 
   useEffect(() => {
