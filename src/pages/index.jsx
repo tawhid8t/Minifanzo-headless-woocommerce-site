@@ -8,7 +8,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { useCart } from "@/context/CartContext";
-import { getProducts, getProductById } from "@/lib/woocommerce";
+import { getProducts, getProductById, getCategories } from "@/lib/woocommerce";
 import { fixRelativeImageUrls } from "@/lib/woocommerce";
 import { CATEGORIES } from "@/lib/products";
 
@@ -413,7 +413,7 @@ function OrderModal({ cart, onClose }) {
 }
 
 // ── Main Homepage ─────────────────────────────────────────────────────────────
-export default function HomePage({ products = [], homepageData = null }) {
+export default function HomePage({ products = [], homepageData = null, categories = CATEGORIES }) {
   const { cart, addToCart, cartCount } = useCart();
   const [activeFilter, setActiveFilter] = useState("all");
   const [sortBy, setSortBy]             = useState("default");
@@ -677,7 +677,7 @@ export default function HomePage({ products = [], homepageData = null }) {
       <section className="categories-strip">
         <div className="container">
           <div className="categories-grid">
-            {CATEGORIES.map(cat => (
+            {categories.map(cat => (
               <div key={cat.key} className="category-card" onClick={() => filterByCategory(cat.key)}>
                 <div className="category-icon"><i className={cat.icon} /></div>
                 <span className="category-name">{cat.label}</span>
@@ -700,11 +700,11 @@ export default function HomePage({ products = [], homepageData = null }) {
           <div className="products-toolbar">
             <div className="filter-tabs">
               {[
-                { key: "all",      label: "All" },
-                { key: "neck",     label: "Neck Fans" },
-                { key: "desk",     label: "Desk Fans" },
-                { key: "handheld", label: "Handheld" },
-                { key: "clip",     label: "Clip Fans" },
+                { key: "all",          label: "All" },
+                { key: "neck-fans",    label: "Neck Fans" },
+                { key: "desk-fans",    label: "Desk Fans" },
+                { key: "handheld-fans", label: "Handheld" },
+                { key: "clip-fans",    label: "Clip Fans" },
               ].map(f => (
                 <button
                   key={f.key}
@@ -1040,6 +1040,30 @@ export async function getStaticProps() {
     
     // Transform WooCommerce format to app format
     const products = wcProducts.map(transformWCProduct);
+    
+    // Fetch categories from WooCommerce to get actual counts
+    const wcCategories = await getCategories({ per_page: 100 });
+    
+    // Map WooCommerce categories to our category keys with counts
+    const categoryMap = {
+      'neck-fans': 0,
+      'desk-fans': 0,
+      'handheld-fans': 0,
+      'clip-fans': 0,
+    };
+    
+    // Count products by category
+    products.forEach(p => {
+      if (categoryMap.hasOwnProperty(p.category)) {
+        categoryMap[p.category]++;
+      }
+    });
+    
+    // Update CATEGORIES with actual counts
+    const categoriesWithCounts = CATEGORIES.map(cat => ({
+      ...cat,
+      count: categoryMap[cat.key] || 0
+    }));
 
     // Fetch homepage data from WordPress REST API
     let homepageData = null;
@@ -1067,7 +1091,7 @@ export async function getStaticProps() {
     }
 
     return {
-      props: { products, homepageData },
+      props: { products, homepageData, categories: categoriesWithCounts },
       revalidate: 60,
     };
   } catch (error) {

@@ -7,7 +7,7 @@ import Head from "next/head";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { useCart } from "@/context/CartContext";
-import { getProducts } from "@/lib/woocommerce";
+import { getProducts, getCategories } from "@/lib/woocommerce";
 import { fixRelativeImageUrls } from "@/lib/woocommerce";
 import { CATEGORIES } from "@/lib/products";
 
@@ -222,7 +222,7 @@ function ProductModal({ product, onClose, onAddToCart, onBuyNow }) {
   );
 }
 
-export default function ShopPage({ products = [] }) {
+export default function ShopPage({ products = [], categories = CATEGORIES }) {
   const router = useRouter();
   const { addToCart } = useCart();
 
@@ -341,7 +341,7 @@ export default function ShopPage({ products = [] }) {
       <section className="categories-strip">
         <div className="container">
           <div className="categories-grid">
-            {CATEGORIES.map(cat => (
+            {categories.map(cat => (
               <div
                 key={cat.key}
                 className={`category-card${activeFilter === cat.key ? " active" : ""}`}
@@ -380,11 +380,11 @@ export default function ShopPage({ products = [] }) {
           <div className="products-toolbar">
             <div className="filter-tabs">
               {[
-                { key: "all",      label: "All" },
-                { key: "neck",     label: "Neck Fans" },
-                { key: "desk",     label: "Desk Fans" },
-                { key: "handheld", label: "Handheld" },
-                { key: "clip",     label: "Clip Fans" },
+                { key: "all",          label: "All" },
+                { key: "neck-fans",    label: "Neck Fans" },
+                { key: "desk-fans",    label: "Desk Fans" },
+                { key: "handheld-fans", label: "Handheld" },
+                { key: "clip-fans",    label: "Clip Fans" },
               ].map(f => (
                 <button
                   key={f.key}
@@ -477,15 +477,34 @@ export async function getStaticProps() {
     
     // Transform WooCommerce format to app format
     const products = wcProducts.map(transformWCProduct);
+    
+    // Count products by category
+    const categoryMap = {
+      'neck-fans': 0,
+      'desk-fans': 0,
+      'handheld-fans': 0,
+      'clip-fans': 0,
+    };
+    
+    products.forEach(p => {
+      if (categoryMap.hasOwnProperty(p.category)) {
+        categoryMap[p.category]++;
+      }
+    });
+    
+    const categoriesWithCounts = CATEGORIES.map(cat => ({
+      ...cat,
+      count: categoryMap[cat.key] || 0
+    }));
 
     return {
-      props: { products },
+      props: { products, categories: categoriesWithCounts },
     };
   } catch (error) {
     console.error("Error fetching products from WooCommerce:", error);
     
     return {
-      props: { products: [] },
+      props: { products: [], categories: CATEGORIES },
     };
   }
 }
